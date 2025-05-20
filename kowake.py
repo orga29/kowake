@@ -2,15 +2,13 @@ import pandas as pd
 import numpy as np # numpy を使用して数値計算や条件分岐を効率的に行います
 import io
 import os # ファイルパスの存在確認のために os モジュールをインポート
-import tkinter as tk
-from tkinter import filedialog, messagebox 
 import datetime # 日付取得のために追加
 
 # openpyxl.utils.get_column_letter を使用するためにインポート (pandasが内部で使用するopenpyxlに依存)
 # 通常、pandasと共にインストールされていれば利用可能
 try:
     from openpyxl.utils import get_column_letter
-    from openpyxl.styles import Border, Side, Font, Color, Alignment 
+    from openpyxl.styles import Border, Side, Font, Color, Alignment
 except ImportError:
     # openpyxl がないか、utils が見つからない場合のフォールバックやエラー処理
     def get_column_letter(idx): # 簡単なフォールバック (限定的)
@@ -268,35 +266,3 @@ def create_repacking_priority_list_from_excel(file_path_or_obj, sheet_name=0):
                       f"読み込まれたExcelヘッダー: {available_cols}"), None, None
     except Exception as e:
         return False, f"処理中に予期せぬエラーが発生しました: {e}", None, None
-
-# --- メインの処理 (tkinter GUI部分、Streamlitからは呼び出されない) ---
-if __name__ == "__main__":
-    root = tk.Tk()
-    root.withdraw() 
-
-    uploaded_excel_file_path = filedialog.askopenfilename(
-        title="処理するExcelファイルを選択してください",
-        filetypes=(("Excelファイル", "*.xlsx"), ("すべてのファイル", "*.*"))
-    )
-
-    if not uploaded_excel_file_path:
-        messagebox.showinfo("情報", "ファイルが選択されませんでした。処理を中止します。")
-    else:
-        success, message, filename, data = create_repacking_priority_list_from_excel(
-            uploaded_excel_file_path 
-        )
-
-        if success:
-            if filename and data:
-                save_dir = os.path.dirname(os.path.abspath(__file__)) if "__file__" in locals() else os.getcwd()
-                output_save_path = os.path.join(save_dir, filename)
-                try:
-                    with open(output_save_path, "wb") as f:
-                        f.write(data)
-                    messagebox.showinfo("処理完了", f"{message}\nファイル '{filename}' が次の場所に保存されました:\n{output_save_path}")
-                except Exception as e:
-                    messagebox.showerror("保存エラー", f"ファイルの保存中に問題が発生しました: {e}\n処理されたデータはメモリ上にありますが、ファイルへの書き出しに失敗しました。")
-            else: 
-                messagebox.showinfo("情報", message)
-        else: 
-            messagebox.showerror("処理エラー", message)
