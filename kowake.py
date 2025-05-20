@@ -4,6 +4,8 @@ import io
 import os # ファイルパスの存在確認のために os モジュールをインポート
 import datetime # 日付取得のために追加
 
+# テスト用
+
 # openpyxl.utils.get_column_letter を使用するためにインポート (pandasが内部で使用するopenpyxlに依存)
 # 通常、pandasと共にインストールされていれば利用可能
 try:
