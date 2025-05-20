@@ -2,13 +2,15 @@ import pandas as pd
 import numpy as np # numpy を使用して数値計算や条件分岐を効率的に行います
 import io
 import os # ファイルパスの存在確認のために os モジュールをインポート
+# import tkinter as tk # Streamlitデプロイのため削除
+# from tkinter import filedialog, messagebox  # Streamlitデプロイのため削除
 import datetime # 日付取得のために追加
 
 # openpyxl.utils.get_column_letter を使用するためにインポート (pandasが内部で使用するopenpyxlに依存)
 # 通常、pandasと共にインストールされていれば利用可能
 try:
     from openpyxl.utils import get_column_letter
-    from openpyxl.styles import Border, Side, Font, Color, Alignment
+    from openpyxl.styles import Border, Side, Font, Color, Alignment 
 except ImportError:
     # openpyxl がないか、utils が見つからない場合のフォールバックやエラー処理
     def get_column_letter(idx): # 簡単なフォールバック (限定的)
@@ -266,3 +268,7 @@ def create_repacking_priority_list_from_excel(file_path_or_obj, sheet_name=0):
                       f"読み込まれたExcelヘッダー: {available_cols}"), None, None
     except Exception as e:
         return False, f"処理中に予期せぬエラーが発生しました: {e}", None, None
+
+# --- メインの処理 (tkinter GUI部分、Streamlitからは呼び出されないため削除済み) ---
+# if __name__ == "__main__":
+#   (このブロックはStreamlitデプロイ用に削除されています)
