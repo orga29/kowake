@@ -2,8 +2,8 @@ import pandas as pd
 import numpy as np # numpy を使用して数値計算や条件分岐を効率的に行います
 import io
 import os # ファイルパスの存在確認のために os モジュールをインポート
-# import tkinter as tk # Streamlitデプロイのため削除
-# from tkinter import filedialog, messagebox  # Streamlitデプロイのため削除
+# import tkinter as tk # Streamlitデプロイのため削除済み
+# from tkinter import filedialog, messagebox  # Streamlitデプロイのため削除済み
 import datetime # 日付取得のために追加
 
 # openpyxl.utils.get_column_letter を使用するためにインポート (pandasが内部で使用するopenpyxlに依存)
@@ -32,14 +32,14 @@ except ImportError:
 def create_repacking_priority_list_from_excel(file_path_or_obj, sheet_name=0):
     """
     Excelファイル (.xlsx) を処理し、小分け生産チーム向けの作業優先度リストをExcelファイルで生成します。
-    1行目にタイトル「日付(mm月dd日) 小分け作成メモ」(フォントサイズ14pt)が記述されます。
+    1行目にタイトル「翌日の日付(mm月dd日) 小分け作成メモ」(フォントサイズ14pt)が記述されます。
     商品は「充足率」昇順を第一優先としてソートされます。
     商品名に「◇」を含み、かつ「今日入荷（作成）」が0でなく、かつ商品名末尾が「東一」でない商品が対象です。
     「箱/こもの」列は出力されません。充足率は小数点以下1桁のパーセント表示になり、列幅が固定されます。
     ヘッダー行とデータセルには罫線が引かれ、D列「本日作成」は太字、F列「不足数」は太字・赤字になります。
     全ての行高は18.0、ヘッダー行(2行目)は中央揃え（横・縦）、データ行は中央揃え（縦）になります。
     フッターとして各種注釈が最終データ行の1行下からA列に順に記述されます。
-    出力ファイル名は「日付(mmdd)_小分け作業の判断指標.xlsx」となります。
+    出力ファイル名は「翌日の日付(mmdd)_小分け作業の判断指標.xlsx」となります。
 
     Args:
         file_path_or_obj (str or UploadedFile): 入力ExcelファイルのパスまたはStreamlitのUploadedFileオブジェクト。
@@ -143,9 +143,9 @@ def create_repacking_priority_list_from_excel(file_path_or_obj, sheet_name=0):
         output_df['充足率'] = df_sorted['calculated_充足率'] 
         
         # --- 出力ファイル名の生成 ---
-        # 日付(mmdd)を取得
-        current_date_mmdd_filename = datetime.datetime.now().strftime("%m%d")
-        output_filename = f"{current_date_mmdd_filename}_小分け作業の判断指標.xlsx"
+        # 翌日の日付(mmdd)を取得
+        tomorrow_date_mmdd_filename = (datetime.datetime.now() + datetime.timedelta(days=1)).strftime("%m%d")
+        output_filename = f"{tomorrow_date_mmdd_filename}_小分け作業の判断指標.xlsx"
         
         excel_buffer = io.BytesIO()
         with pd.ExcelWriter(excel_buffer, engine='openpyxl') as writer:
@@ -156,8 +156,9 @@ def create_repacking_priority_list_from_excel(file_path_or_obj, sheet_name=0):
             worksheet = writer.sheets['作業優先リスト']
 
             # --- タイトル行の追加と設定 ---
-            current_date_title = datetime.datetime.now().strftime("%m月%d日") 
-            title_text = f"{current_date_title} 小分け作成メモ"
+            # 翌日の日付(mm月dd日)を取得
+            tomorrow_date_title = (datetime.datetime.now() + datetime.timedelta(days=1)).strftime("%m月%d日") 
+            title_text = f"{tomorrow_date_title} 小分け作成メモ"
             worksheet['B1'] = title_text
             title_font = Font(bold=True, size=14) 
             worksheet['B1'].font = title_font
@@ -269,6 +270,5 @@ def create_repacking_priority_list_from_excel(file_path_or_obj, sheet_name=0):
     except Exception as e:
         return False, f"処理中に予期せぬエラーが発生しました: {e}", None, None
 
-# --- メインの処理 (tkinter GUI部分、Streamlitからは呼び出されないため削除済み) ---
-# if __name__ == "__main__":
-#   (このブロックはStreamlitデプロイ用に削除されています)
+# --- メインの処理 (Streamlitからは呼び出されないため、tkinter関連は削除済み) ---
+# (この部分はStreamlitデプロイ用に削除されています)
