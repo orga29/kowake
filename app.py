@@ -4,9 +4,9 @@ from kowake import create_repacking_priority_list_from_excel
 # import datetime # サブタイトル削除のため不要に
 
 # --- Streamlit アプリケーションのUI設定 ---
-st.set_page_config(page_title="小分け作業 優先順位判定", layout="wide") # page_titleも変更
+st.set_page_config(page_title="小分け作業用", layout="wide") # page_titleも変更
 
-st.title("小分け作業 優先順位判定") # タイトルを変更
+st.title("小分け作業用") # タイトルを変更
 
 # サブタイトル「（日付） 小分け作成メモ」を削除
 # current_date_mmdd = datetime.datetime.now().strftime("%m月%d日")
@@ -47,5 +47,5 @@ st.markdown("#### 補足説明")
 st.markdown("""
 - Excelファイルをアップロードしたら、「処理実行」ボタンを押してください。
 - 処理結果は、ファイルとしてダウンロードできます。
-- 「充足率」は「納品数」に対する「昨日残数」の割合（昨日残数÷納品数）で計算されます。
+- 「充足率」は「納品数」に対する「昨日残数」の割合です。（昨日残数÷納品数×100）
 """)
